@@ -1,0 +1,14 @@
+{
+    "name": "alex/my_mvc",
+    "description": "my implementation MVC",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alexandr Gavuka",
+            "email": "alexandrgavuka@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
