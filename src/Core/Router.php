@@ -18,18 +18,14 @@ class Router
      */
     public function run()
     {
-        $uriData = $this->getUri();
+        $uri = $this->getUri();
+        $resultActionWork = false;
+        $pregMuchResult = false;
 
-        if (is_array($uriData)) {
-            $uri = $uriData['0'];
-            $endPointUri = $uriData['1'];
-        } else {
-            $uri = $uriData;
-        }
-
-        /** The same can be done with preg_match (), but my implementation without foreach */
-        if (array_key_exists($uri, $this->routes)) {
-                $segments = explode('/', $this->routes[$uri]);
+        foreach ($this->routes as $uriPattern => $path) {
+            if (preg_match("~$uriPattern~", $uri)) {
+                $pregMuchResult = true;
+                $segments = explode('/', $path);
                 $controllerName = array_shift($segments) . 'Controller';
                 $controllerName = 'Controller\\' . ucfirst($controllerName);
                 $actionName = array_shift($segments) . 'Action';
@@ -38,19 +34,35 @@ class Router
                     $controller = new $controllerName;
 
                     if (method_exists($controller, $actionName)) {
-                        if (!empty($endPointUri)) {
-                            $controller->$actionName($endPointUri);
+
+                        /** Here it is possible to write a recursion for processing of URLs of any nesting */
+                        if (strpos($uri, '/')) {
+                            $uriSegment = explode('/', $uri);
+                            $endPointUri = end($uriSegment);
+                            if ($controller->$actionName($endPointUri)) {
+                                $resultActionWork = true;
+                            }
+                        } else {
+                            if ($controller->$actionName()) {
+                                $resultActionWork = true;
+                            }
                         }
 
-                        $controller->$actionName();
                     } else {
-                        echo "<pre>" . var_dump("action $actionName does not exist") . "</pre>";exit;
+                        echo "<pre>" . var_dump("action $actionName does not exist") . "</pre>";
+                        exit;
                     }
 
                 } else {
-                    echo "<pre>" . var_dump("Controller $controllerName does not exist") . "</pre>";exit;
+                    echo "<pre>" . var_dump("Controller $controllerName does not exist") . "</pre>";
+                    exit;
                 }
-        } else {
+
+                break;
+            }
+        }
+
+        if ($uriPattern === end($this->routes) && $resultActionWork === false || $pregMuchResult === false) {
             echo '<h1>404 Page not found</h1>';
             http_response_code(404);
         }
@@ -62,19 +74,12 @@ class Router
     private function getUri()
     {
         if (!empty($_SERVER['REQUEST_URI'])) {
-            if (strlen($_SERVER['REQUEST_URI']) > 1) {
-                $result = trim($_SERVER['REQUEST_URI'], '/');
-
-                if (strpos($result, '/')) {
-                    $result = explode('/', $result);
-
-                    return $result;
-                }
-
-                return $result;
-            } else {
-                return $_SERVER['REQUEST_URI'];
+            $result = $_SERVER['REQUEST_URI'];
+            if (strlen($result) > 1) {
+                $result = trim($result, '/');
             }
+
+            return $result;
         }
     }
 }
