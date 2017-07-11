@@ -8,7 +8,9 @@ class App
 {
     public function run()
     {
-        echo "App Started";
+        //todo implement security
+        $security = new Security();
+        $security->run();
 
         //todo Create dependence injections in future!
         $routing = new Routing();

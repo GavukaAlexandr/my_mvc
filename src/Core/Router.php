@@ -18,6 +18,7 @@ class Router
      */
     public function run()
     {
+        //todo To upgrage router for full clean URLs
         $uri = $this->getUri();
         $resultActionWork = false;
         $pregMuchResult = false;
@@ -62,7 +63,10 @@ class Router
             }
         }
 
-        if ($uriPattern === end($this->routes) && $resultActionWork === false || $pregMuchResult === false) {
+        if (
+            $uriPattern === end($this->routes) &&
+            $resultActionWork === false ||
+            $pregMuchResult === false) {
             echo '<h1>404 Page not found</h1>';
             http_response_code(404);
         }
