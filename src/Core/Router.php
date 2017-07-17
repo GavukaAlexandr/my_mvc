@@ -63,8 +63,7 @@ class Router
             }
         }
 
-        if (
-            $uriPattern === end($this->routes) &&
+        if ($uriPattern === end($this->routes) &&
             $resultActionWork === false ||
             $pregMuchResult === false) {
             echo '<h1>404 Page not found</h1>';

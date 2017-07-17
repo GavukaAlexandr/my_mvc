@@ -94,17 +94,25 @@ class ActiveRecord
             $paramsArray[":$fieldName"] = $fieldValue;
         }
 
-        $stmt->execute($paramsArray);
+        if (!$stmt->execute($paramsArray)) {
+            echo "\nPDO::errorInfo():\n";
+            print_r($stmt->errorInfo());
+        }
     }
 
     public function getAllDataInTable($table)
     {
         $stmt = $this->dbh->prepare("SELECT * FROM $table");
-        $data = null;
         $stmt->execute();
-        while ($row = $stmt->fetch()) {
-           $data[] = $row;
-        }
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+//        foreach ($data as $key => $row){
+//            foreach ($row as $innerKey => $value){
+//                if (is_numeric($innerKey)){
+//                    unset($data[$key][$innerKey]);
+//                }
+//            }
+//        }
         return $data;
     }
 

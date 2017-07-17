@@ -1,0 +1,45 @@
+body {background-color: aliceblue}
+
+.header {
+    /*height: 3rem;*/
+    color: azure;
+    font-size: 3rem;
+}
+
+article {
+    /*margin: 2rem;*/
+}
+
+.article {
+    background-color: white;
+    margin-bottom: 2rem;
+}
+
+.title {
+
+}
+
+.body-article{
+    padding: 3rem;
+    padding-bottom: 0rem;
+}
+
+.user-photo {
+    height: 10rem;
+    width: 10rem;
+}
+
+.comments {
+    padding: 3rem;
+    /*background-color: cornflowerblue;*/
+}
+
+.create-comment {
+    padding: 3rem;
+}
+
+.photo-block {
+    float: left;
+}
+
+

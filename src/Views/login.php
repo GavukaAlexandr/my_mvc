@@ -1,3 +1,5 @@
+<?php extract($data) ?>
+
 <!DOCTYPE html>
 <html>
 <head>

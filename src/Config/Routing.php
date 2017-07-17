@@ -10,6 +10,8 @@ class Routing
         'register' => 'user/register',
         'login' => 'user/login',
         'logout' => 'user/logout',
+        'create-comment' => 'app/createComment',
+        'remove-comment' => 'app/removeComment',
 //        '' => '',
     ];
 }

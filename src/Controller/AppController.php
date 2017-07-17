@@ -3,6 +3,7 @@
 namespace Controller;
 
 use Core\View;
+use Model\Comment;
 use Model\Post;
 use Model\User;
 
@@ -20,10 +21,36 @@ class AppController
     {
         //todo get data and render template
         $post = new Post();
-        $getPosts = $post->getPosts();
+        $allPost = $post->getPosts();
 
-        $renderArray = [];
-        $this->view->render('index.php', $renderArray);
+        $this->view->render('index.php', $allPost);
+    }
+
+    public function createCommentAction()
+    {
+        session_start();
+        $user = $_SESSION['user']['id'];
+        $postId = $_POST['post_id'];
+        $commentParentId = $_POST['comment_parent_id'];
+        $message = $_POST['message'];
+
+        $comment = new Comment();
+        $comment->model->insertDataInTable(
+            'comment',
+            [
+                'post_id' => $postId,
+                'user_id' => $user,
+                'content' => $message,
+                'parent_comment_id' => $commentParentId]
+        );
+
+        header('Location: http://mymvc/');
+        exit;
+    }
+
+    public function removeCommentAction()
+    {
+
     }
 
     public function postAction($endPointUri)

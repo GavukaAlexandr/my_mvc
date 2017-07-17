@@ -25,11 +25,11 @@ class UserController
             $user->getUserByEmail($userEmail);
 
             if ($user->email === $userEmail && $user->password === $userPassword) {
-                session_start(['cookie_lifetime' => 86400]);
+                session_start(/*['cookie_lifetime' => 86400]*/);
                 $_SESSION["user"]["id"] = $user->id;
                 $_SESSION["user"]["name"] = $user->name;
                 $_SESSION["user"]["email"] = $user->email;
-                header('Location: http://localhost:8000/');
+                header('Location: http://mymvc/');
                 exit;
             } else {
                 $renderArray = [

@@ -20,9 +20,9 @@ class Security
                 default :
                     session_start();
                     if (isset($_SESSION['user'])) {
-                        print "User " . $_SESSION['user']['name'] . " authenticated";
+//                        print "User " . $_SESSION['user']['name'] . " authenticated";
                     } else {
-                        header('Location: http://localhost:8000/login');
+                        header('Location: http://mymvc/login');
                         exit;
                     }
             }
