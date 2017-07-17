@@ -48,9 +48,40 @@ class AppController
         exit;
     }
 
+    public function updateCommentAction()
+    {
+        session_start();
+        $user = $_SESSION['user']['id'];
+        $postId = $_POST['post_id'];
+        $commentId = $_POST['comment_id'];
+        $parentCommentId = $_POST['parent_comment_id'];
+        $message = $_POST['message'];
+
+        $comment = new Comment();
+        $comment->model->update(
+            'comment',
+            [
+                'id' => $commentId,
+                'post_id' => $postId,
+                'user_id' => $user,
+                'content' => $message,
+                'parent_comment_id' => $parentCommentId
+            ],
+            $commentId
+        );
+
+        header('Location: http://mymvc/');
+        exit;
+    }
+
     public function removeCommentAction()
     {
+        $commentId = $_POST['comment_id'];
+        $comment = new Comment();
+        $comment->model->delete('comment', $commentId);
 
+        header('Location: http://mymvc/');
+        exit;
     }
 
     public function postAction($endPointUri)

@@ -22,6 +22,7 @@ function render($comments)
     include 'src/Views/PartsTemplates/commentButtons.php';
 
     include 'src/Views/PartsTemplates/commentForm.php';
+    include 'src/Views/PartsTemplates/commentEditForm.php';
     if (array_key_exists('children', $comments)) {
         echo "<ul>";
         recursiveRenderComment($comments['children']);

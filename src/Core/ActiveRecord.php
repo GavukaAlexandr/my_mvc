@@ -71,13 +71,15 @@ class ActiveRecord
      * @param string $table
      * @param array $data
      */
-    public function insertDataInTable(string $table, array $data)
+    public function insertDataInTable( string $table, array $data)
     {
         $names = null;
         $values = null;
 
+
         foreach ($data as $fieldName => $fieldValue) {
-            if (end($data) === $data[$fieldName]) {
+            end($data);
+            if ((string) key($data) === (string) $fieldName) {
                 $names = $names . "$fieldName";
                 $values = $values . ":$fieldName";
             } else {
@@ -86,7 +88,7 @@ class ActiveRecord
             }
         }
 
-        $sql = "INSERT INTO `$table` ($names) VALUES ($values)";
+        $sql = "INSERT INTO  `$table` ($names) VALUES ($values)";
         $stmt = $this->dbh->prepare($sql);
 
         $paramsArray = [];
@@ -100,45 +102,44 @@ class ActiveRecord
         }
     }
 
+    public function update($table, array $data, $byId)
+    {
+        $setData = null;
+
+        foreach ($data as $fieldName => $fieldValue) {
+            end($data);
+            if ((string) key($data) === (string) $fieldName) {
+                $setData .= "$fieldName='$fieldValue'";
+            }else {
+                $setData .= "$fieldName='$fieldValue', ";
+            }
+        }
+
+        $sql = "UPDATE `$table` SET $setData WHERE id=$byId";
+
+        $stmt = $this->dbh->prepare($sql);
+
+        if (!$stmt->execute()) {
+            echo "\nPDO::errorInfo():\n";
+            print_r($stmt->errorInfo());
+            echo "<pre>" . var_dump(111) . "</pre>";exit;
+        }
+
+    }
+
+    public function delete($table, $id)
+    {
+        $sql = "DELETE FROM `$table` WHERE id=$id";
+        $stmt = $this->dbh->exec($sql);
+    }
+
     public function getAllDataInTable($table)
     {
         $stmt = $this->dbh->prepare("SELECT * FROM $table");
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-//        foreach ($data as $key => $row){
-//            foreach ($row as $innerKey => $value){
-//                if (is_numeric($innerKey)){
-//                    unset($data[$key][$innerKey]);
-//                }
-//            }
-//        }
         return $data;
-    }
-
-
-    /**
-     * @param $table
-     * @param $insert
-     * @param $object
-     * @return int
-     */
-    public function update($table, $insert, $object)
-    {
-        $tmp = array();
-        $primaryKey = $this->getPrimaryKey($table);
-        $insert = $this->filter($insert, $table);
-
-        foreach ($insert as $key => $value) {
-            $tmp[] = "$key=?";
-        }
-        $str = implode(', ', $tmp);
-
-        $sql = "UPDATE $table SET $str WHERE $primaryKey='" . $object->$primaryKey . "'";
-        $query = $this->dbh->prepare($sql);
-        $query->execute(array_values($insert));
-
-        return $this->dbh->exec($sql);
     }
 
     /**

@@ -12,6 +12,7 @@ class Routing
         'logout' => 'user/logout',
         'create-comment' => 'app/createComment',
         'remove-comment' => 'app/removeComment',
+        'update-comment' => 'app/updateComment',
 //        '' => '',
     ];
 }
