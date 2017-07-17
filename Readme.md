@@ -1,4 +1,27 @@
 LAUNCH
 
-execute in project folder from cli:
-php -S localhost:8000 router.php
+Apache config
+
+````
+Listen 80
+<VirtualHost *:80>
+	ServerName mymvc    
+	ServerAlias www.mymvc
+DocumentRoot "/home/alex/www/my_mvc"
+<Directory /home/alex/www/my_mvc>
+        AllowOverride None
+	Require all granted
+        Allow from All
+
+
+        <IfModule mod_rewrite.c>
+            Options -MultiViews
+            RewriteEngine On
+            RewriteCond %{REQUEST_FILENAME} !-f
+            RewriteRule ^(.*)$ index.php [QSA,L]
+        </IfModule>
+    </Directory>    
+
+    # Other directives here
+</VirtualHost>
+````
