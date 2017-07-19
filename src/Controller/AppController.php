@@ -5,7 +5,6 @@ namespace Controller;
 use Core\View;
 use Model\Comment;
 use Model\Post;
-use Model\User;
 
 class AppController
 {
@@ -77,8 +76,9 @@ class AppController
     public function removeCommentAction()
     {
         $commentId = $_POST['comment_id'];
+
         $comment = new Comment();
-        $comment->model->delete('comment', $commentId);
+        $comment->model->deletecomment('comment', $commentId);
 
         header('Location: http://mymvc/');
         exit;

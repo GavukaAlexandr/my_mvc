@@ -31,43 +31,6 @@ class ActiveRecord
     }
 
     /**
-     * @param $table
-     * @param $insert
-     * @return mixed
-     */
-    public function create($table, $insert)
-        //Timestamp always set unless otherwise specified
-    {
-        // Filter out fields that don't exist
-        $insert = $this->filter($insert, $table);
-        //End Filter
-
-
-        $keys = implode(', ', array_keys($insert));
-        $table_values = implode(", :", array_keys($insert));
-        $sql = "INSERT INTO $table ($keys) VALUES(:$table_values)";
-        $query = $this->dbh->prepare($sql);
-        $new_insert = array();
-        foreach ($insert as $key => $value) {
-            if ($value == null) {
-                $value = '';
-            }
-            $new_insert[":" . $key] = $value;
-        }
-        $query->execute($new_insert);
-
-        //to check that there is an id field before using it to get the last object
-        if ($this->dbh->lastInsertId()) {
-            $stmt = $this->dbh->query("SELECT * FROM $table WHERE {$this->getPrimaryKey($table)}='" . $this->dbh->lastInsertId() . "'");
-            return $stmt->fetch(PDO::FETCH_OBJ);
-        } else //if there isn't, just get the object by fields
-        {
-            return $this->getByWhere($table, $insert);
-        }
-    }
-
-
-    /**
      * @param string $table
      * @param array $data
      */
@@ -127,10 +90,24 @@ class ActiveRecord
 
     }
 
-    public function delete($table, $id)
+    public function deletecomment($table, $id)
     {
         $sql = "DELETE FROM `$table` WHERE id=$id";
-        $stmt = $this->dbh->exec($sql);
+
+        if (!$stmt = $this->dbh->exec($sql)) {
+//            echo "\nPDO::errorInfo():\n";
+//            print_r($stmt->errorInfo());
+//            echo "<pre>" . var_dump(111) . "</pre>";exit;
+        }
+
+        $sql2 = "DELETE FROM `$table` WHERE parent_comment_id=$id";
+
+        if (!$stmt = $this->dbh->exec($sql2)) {
+//            echo "\nPDO::errorInfo():\n";
+//            print_r($stmt->errorInfo());
+//            echo "<pre>" . var_dump(111) . "</pre>";exit;
+        }
+
     }
 
     public function getAllDataInTable($table)
@@ -165,12 +142,6 @@ class ActiveRecord
         return $this->getByWhere($table, $data, $options);
     }
 
-    /**
-     * @param $table
-     * @param $data
-     * @param bool $options
-     * @return mixed
-     */
     public function getByWhere($table, $data, $options = false)
     {
         $data = $this->filter($data, $table);

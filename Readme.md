@@ -1,5 +1,12 @@
 LAUNCH
 
+restore the database dump from mymvc_dump.sql
+````
+mysql -u USER -pPASSWORD DATABASE < /path/to/mymvc_dump.sql
+````
+
+configure Config/DbConfig.php
+
 Apache config
 
 ````
